@@ -1,8 +1,8 @@
 class Node {
   constructor(value) {
+    this.value = value;
     this.left = null;
     this.right = null;
-    this.value = value;
   }
 }
 class BinarySearchTree {
@@ -17,26 +17,26 @@ class BinarySearchTree {
     if (this.isEmpty()) {
       this.root = node;
     } else {
-      this.insertNewNode(this.root, node);
+      this.insertNew(this.root, node);
     }
   }
-  insertNewNode(root, node) {
+  insertNew(root, node) {
     if (node.value < root.value) {
       if (root.left === null) {
         root.left = node;
       } else {
-        this.insertNewNode(root.left, node);
+        this.insertNew(root.left, node);
       }
     } else {
       if (root.right === null) {
         root.right = node;
       } else {
-        this.insertNewNode(root.right, node);
+        this.insertNew(root.right, node);
       }
     }
   }
   search(root, value) {
-    if (root === null) {
+    if (!root) {
       return false;
     } else {
       if (root.value === value) {
@@ -55,11 +55,11 @@ class BinarySearchTree {
       this.PreOrder(root.right);
     }
   }
-  InOrder(root) {
+  inOrder(root) {
     if (root) {
-      this.InOrder(root.left);
+      this.inOrder(root.left);
       console.log(root.value);
-      this.InOrder(root.right);
+      this.inOrder(root.right);
     }
   }
   PostOrder(root) {
@@ -69,33 +69,16 @@ class BinarySearchTree {
       console.log(root.value);
     }
   }
-  levelOrder() {
-    if (!this.root) {
-      return;
-    }
-    let queue = [];
-    queue.push(this.root);
-    while (queue.length) {
-      let curr = queue.shift();
-      console.log(curr.value);
-      if (curr.left) {
-        queue.push(curr.left);
-      }
-      if (curr.right) {
-        queue.push(curr.right);
-      }
-    }
-  }
   min(root) {
     if (!root.left) {
-      return root.value;
+      return false;
     } else {
       return this.min(root.left);
     }
   }
   max(root) {
     if (!root.right) {
-      return root.value;
+      return false;
     } else {
       return this.max(root.right);
     }
@@ -103,7 +86,6 @@ class BinarySearchTree {
   delete(value) {
     this.root = this.deleteNode(this.root, value);
   }
-
   deleteNode(root, value) {
     if (root === null) {
       return null;
@@ -111,80 +93,64 @@ class BinarySearchTree {
     if (value < root.value) {
       root.left = this.deleteNode(root.left, value);
     } else if (value > root.value) {
-      root.right = this.deleteNode(root.right, value);
+      root.rgiht - this.delete(root.right, value);
     } else {
-      // Node with only one child or no child
       if (!root.left) {
-        return root.right;
+        return root.rgiht;
       } else if (!root.right) {
         return root.left;
       }
-      // Node with two children: Get the inorder successor (smallest in the right subtree)
       root.value = this.min(root.right);
-      // Delete the inorder successor
       root.right = this.deleteNode(root.right, root.value);
     }
     return root;
   }
   height(root) {
     if (!root) {
-      return -1;
+      return false;
     }
     let leftHeight = this.height(root.left);
     let rightHeight = this.height(root.right);
     return Math.max(leftHeight, rightHeight) + 1;
   }
-  isBalanced(root){
-    if(!root){
-        return false;
+  isBalanced(root) {
+    if (!root) {
+      return false;
     }
     let leftHeight = this.height(root.left);
     let rightHeight = this.height(root.right);
-    let HeightDiff = Math.abs(leftHeight,rightHeight) <=1;
-    return HeightDiff && this.isBalanced(root.left) && this.isBalanced(root.right);
+    let HeightDiff = Math.abs(leftHeight, rightHeight) <= 1;
+    return (
+      HeightDiff && this.isBalanced(root.left) && this.isBalanced(root.right)
+    );
   }
-  iSBsT(root,min=null,max=null){
-    if(!root){
-        return true;
-    }
-    if((min !== null && root.value < min )|| (max !=null  && root.value >= max)){
+  isBST(root, min = null, max = null) {
+    if (!root) {
+      return true;
+    } else {
+      if (
+        (min != null && root.value < min) ||
+        (max != null && root.value > max)
+      ) {
         return false;
-    }
-
-  }
-  iSBsT(root,min=null,max=null){
-    if(!root){
-        return true;
-    }
-    if((min!==null && root.value < min)||(max!=null && root.value >=max)){
-        return false;
+      }
     }
   }
-  findTheClosestValue(root,target){
+  findTheClosestValue(root, target) {
     let closest = root.value;
-    while(root !==null){
-        if(Math.abs(target-closest) > Math.abs(target-root.value)){
-            closest = root.value;
-        }
-        if(target < root.value){
-            root = root.left;
-        }
-        else if(target > root.value){
-            root = root.right
-        }
-        else{
-            break;
-        }
+    while (root !== null) {
+      if (Math.abs(target - closest) > Math.abs(target - root.value)) {
+        closest = root.value;
+      }
+      if (target < root.value) {
+        root = root.left;
+      } else if (target > root.value) {
+        root = root.right;
+      } else {
+        break;
+      }
     }
-    return closest;
+    return closest
   }
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(12);
-bst.insert(8);
-bst.insert(4);
-bst.insert(3);
-bst.insert(5);
-const resutl = bst.height(bst.root);
-console.log(resutl);
+
